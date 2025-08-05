@@ -1,103 +1,144 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { start } from "repl";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+	const [startstate, setStartState] = useState("");
+	const [todos, setTodos] = useState<string[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+	const [active, setActive] = useState(99);
+	const [edited, setEdited] = useState("");
+
+	useEffect(() => {
+		console.log("SOMETHING CHANGED");
+		console.log(todos);
+	}, [startstate, todos]);
+
+	return (
+		<div className="h-screen w-full flex flex-col justify-center items-center gap-4">
+			<h1 className="">To do List</h1>
+
+			<div>
+				<input
+					type="text"
+					className="bg-amber-100 text-black mr-[10px]"
+					onChange={(e) => setStartState(e.target.value)}
+				/>
+
+				<button
+					className="bg-amber-400 h-[20px] w-[40px]"
+					onClick={() => {
+						setTodos([...todos, startstate]);
+					}}>
+					Add
+				</button>
+			</div>
+
+			<p>Task List</p>
+
+			{/* TURN ON AI LATER   */}
+			{/* JS IN {}! */}
+
+			<ul className="w-[25%]">
+				{todos.map((val, index) => (
+					<li
+						key={index}
+						className=" border border-solid border-white p-2 flex justify-between w-auto m-[10px] flex-wrap  ">
+						<div className="right">
+							<input type="checkbox" className="mr-[10px]" />
+							{active === index ? (
+								<input
+									type="text"
+									value={edited}
+									onChange={(e) => setEdited(e.target.value)}
+								/>
+							) : (
+								val
+							)}
+						</div>
+
+						<div className="left mr-[10px] ">
+							<button
+								className="text-red-500 mr-[10px]"
+								onClick={() => {
+									// delete the todo item on that index
+
+									let newTodos = [...todos];
+
+									newTodos.splice(index, 1);
+
+									setTodos(newTodos);
+								}}>
+								Delete
+							</button>
+
+							<button
+								className="text-red-500"
+								onClick={() => {
+									if (active === index) {
+										let newTodos = [...todos];
+
+										newTodos[index] = edited;
+
+										setTodos(newTodos);
+										setActive(NaN);
+									} else {
+										setEdited(val);
+										setActive(index);
+									}
+
+									console.log(edited);
+								}}>
+								Edit
+							</button>
+						</div>
+					</li>
+				))}
+
+				{/* <li className=" border border-solid border-white p-2 flex justify-between w-auto m-[10px] flex-wrap  ">
+					<div className="right">
+						<input type="checkbox" className="mr-[10px]" />
+						wash dishes
+					</div>
+
+					<div className="left mr-[10px] ">
+						<button className="text-red-500 mr-[10px]">Delete</button>
+
+						<button className="text-red-500">Edit</button>
+					</div>
+				</li>
+
+				<li className=" border border-solid border-white p-2 flex justify-between w-auto m-[10px]  flex-wrap ">
+					<div className="right">
+						<input type="checkbox" className="mr-[10px]" />
+						edit resume
+					</div>
+
+					<div className="left mr-[10px] ">
+						<button className="text-red-500 mr-[10px]">Delete</button>
+
+						<button className="text-red-500">Edit</button>
+					</div>
+				</li>
+
+				<li className=" border border-solid border-white p-2 flex justify-between w-auto  m-[10px]  flex-wrap ">
+					<div className="right">
+						<input type="checkbox" className="mr-[10px]" />
+						finish Codex course
+					</div>
+
+					<div className="left mr-[10px] ">
+						<button className="text-red-500 mr-[10px]">Delete</button>
+
+						<button className="text-red-500">Edit</button>
+					</div>
+				</li> */}
+			</ul>
+
+			<div className="border border-solid border-blue-500 w-[30%]"></div>
+
+			<p> Completed:1 | Uncompleted:2</p>
+		</div>
+	);
 }
