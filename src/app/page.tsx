@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { start } from "repl";
 
+
+console.log("vzz");
 export default function Home() {
 	const [startstate, setStartState] = useState("");
 	const [todos, setTodos] = useState<string[]>([]);
